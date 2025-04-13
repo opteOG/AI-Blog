@@ -7,6 +7,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
+export const revalidate = 7200;
+
 async function getData(id: string) {
   const data = await prisma.blogPost.findUnique({
     where: {

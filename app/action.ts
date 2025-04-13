@@ -28,16 +28,16 @@ export async function handleSubmisstion(formData: FormData) {
       authorName: user.given_name as string,
     },
   });
-
+  revalidatePath("/");
   return redirect("/dashboard");
 }
 // 处理博客文章删除
 export async function handleDelete(formData: FormData) {
-  const postId = formData.get('id')
+  const postId = formData.get("id");
   await prisma.blogPost.delete({
     where: {
-      id: postId?.toString()
-    }
-  })
-  revalidatePath('/dashboard')
+      id: postId?.toString(),
+    },
+  });
+  revalidatePath("/dashboard");
 }

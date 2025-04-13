@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model BlogPost {
+  id String @id @default(uuid())
+  title String
+  content String @db.Text
+  imageUrl String
+  authorId String
+  authorName String
+  authorImage String
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id        String    @id // AI 会话 ID
+  createdAt DateTime  @default(now())      // 创建时间
+  messages  Message[] // 关联的消息
+}
+
+model Message {
+  id        String   @id @default(uuid())  // 消息 ID
+  content   String   @db.Text                                  // 消息内容
+  role      String                                  // 角色（user/AI）
+  createdAt DateTime @default(now())       // 创建时间
+  sessionId String                                   // AI 会话 ID
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade) // 关联到 Session
+}

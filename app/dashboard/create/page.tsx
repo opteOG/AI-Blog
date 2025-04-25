@@ -1,6 +1,5 @@
 import { handleSubmisstion } from "@/app/action";
 import SubmitButton from "@/app/components/general/SubmitButton";
-import { buttonVariants } from "@/app/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,35 +11,27 @@ import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Textarea } from "@/app/components/ui/textarea";
 import { prisma } from "@/app/utils/db";
-import { generateId } from "ai";
-import Link from "next/link";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import React from "react";
 
-const CreateBlog = async ({
-  searchParams,
-}: {
-  searchParams: Promise<{ sessionId: string }>;
-}) => {
-  let { sessionId } = await searchParams;
-
+const CreateBlog = async () => {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
   const message = await prisma.message.findFirst({
     where: {
-      sessionId: sessionId,
-      role: "AI",
+      sessionId: user.id,
+      role: "assistant",
     },
     orderBy: {
       createdAt: "desc",
     },
   });
-  sessionId = sessionId || generateId();
   return (
-    <div>
-      <Card className="max-w-lg mx-auto">
+    <div className="flex items-center justify-center flex-1 pb-4">
+      <Card className="max-w-lg mx-auto w-lg">
         <CardHeader>
           <CardTitle>创建文章</CardTitle>
-          <CardDescription>
-            发布一篇文章与世界分享
-          </CardDescription>
+          <CardDescription>发布一篇文章与世界分享</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-4" action={handleSubmisstion}>
@@ -78,12 +69,6 @@ const CreateBlog = async ({
           </form>
         </CardContent>
       </Card>
-      <div className="flex flex-col items-center mt-2 ">
-        <p>不知道如何表达？让AI来帮助你</p>
-        <Link className={buttonVariants()} href={`/chat/${sessionId}`}>
-          点击前往
-        </Link>
-      </div>
     </div>
   );
 };

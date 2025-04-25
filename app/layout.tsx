@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/app/components/general/Navbar";
 import { AuthProvider } from "@/app/components/general/AuthProvider";
 import { ThemesProvider } from "./components/general/ThemesProvider";
+import QueryClientProvider from "@/app/components/general/QueryClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,21 +28,23 @@ export default function RootLayout({
 }>) {
   return (
     <AuthProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased *
-        max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`}
-        >
-          <ThemesProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
+      <QueryClientProvider>
+        <html lang="en" suppressHydrationWarning>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased *
+        max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col h-screen`}
           >
-            <Navbar></Navbar>
-            {children}
-          </ThemesProvider>
-        </body>
-      </html>
+            <ThemesProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem={false}
+            >
+              <Navbar></Navbar>
+              {children}
+            </ThemesProvider>
+          </body>
+        </html>
+      </QueryClientProvider>
     </AuthProvider>
   );
 }

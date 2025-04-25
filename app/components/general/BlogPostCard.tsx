@@ -1,5 +1,6 @@
 "use client";
 import formatTime from "@/app/utils/formatTime";
+import formatViewCount from "@/app/utils/formatViewCount";
 import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode } from "react";
@@ -12,6 +13,7 @@ interface BlogPostCardProps {
     imageUrl: string;
     authorId: string;
     authorName: string;
+    views: number;
     authorImage: string;
     createAt: Date;
     updatedAt: Date;
@@ -33,13 +35,19 @@ const BlogPostCard = ({ data, children }: BlogPostCardProps) => {
         </div>
 
         <div className="p-4">
-          <h3 className="mb-2 text-lg font-semibold text-gray-900">
-            {data.title}
+          <h3 className="flex justify-between mb-2 text-lg font-semibold text-gray-900">
+            <div>{data.title}</div>
+            <p className="mb-4 text-sm text-gray-600 line-clamp-2">
+              阅读量：{formatViewCount(data.views)}
+            </p>
           </h3>
           <p className="mb-4 text-sm text-gray-600 line-clamp-2">
             {data.content}
           </p>
-          <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-between">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center justify-between"
+          >
             <div className="flex items-center space-x-2">
               <div className="relative size-8 overflow-hidden rounded-full">
                 <Image

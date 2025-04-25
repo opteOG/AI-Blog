@@ -13,6 +13,7 @@ async function getData() {
       authorImage: true,
       authorName: true,
       id: true,
+      views: true,
       createAt: true,
       authorId: true,
       updatedAt: true,

@@ -12,7 +12,7 @@ import ModeToggle from "./ModeToggle";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 const Navbar = () => {
-  const { getUser } = useKindeBrowserClient()
+  const { getUser } = useKindeBrowserClient();
   const user = getUser();
 
   return (
@@ -25,20 +25,26 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden sm:flex items-center gap-6">
-          <Link href="/" className="text-sm font-medium hover:text-blue-500 ">
+          <Link href="/" className="text-md font-medium hover:text-blue-500 ">
             主页
           </Link>
           <Link
             href="/dashboard"
-            className="text-sm font-medium hover:text-blue-500 "
+            className="text-md font-medium hover:text-blue-500 "
           >
             个人
           </Link>
           <Link
             href="/chat"
-            className="text-sm font-medium hover:text-blue-500 "
+            className="text-md font-medium hover:text-blue-500 "
           >
             Ai
+          </Link>
+          <Link
+            href="/chat"
+            className="text-md font-medium hover:text-blue-500 "
+          >
+            性能监控
           </Link>
         </div>
       </div>

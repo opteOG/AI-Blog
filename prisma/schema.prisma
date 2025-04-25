@@ -21,20 +21,22 @@ model BlogPost {
   authorId String
   authorName String
   authorImage String
+  views Int
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Session {
-  id        String    @id // AI 会话 ID
+  id        String    @id// AI 会话 ID
   createdAt DateTime  @default(now())      // 创建时间
   messages  Message[] // 关联的消息
+  userId String // 用户id
 }
 
 model Message {
   id        String   @id @default(uuid())  // 消息 ID
   content   String   @db.Text                                  // 消息内容
-  role      String                                  // 角色（user/AI）
+  role      String                                  // 角色
   createdAt DateTime @default(now())       // 创建时间
   sessionId String                                   // AI 会话 ID
   session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade) // 关联到 Session

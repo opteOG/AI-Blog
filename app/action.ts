@@ -24,6 +24,7 @@ export async function handleSubmisstion(formData: FormData) {
       content: content as string,
       imageUrl: url as string,
       authorId: user.id,
+      views: 1,
       authorImage: user.picture as string,
       authorName: user.given_name as string,
     },

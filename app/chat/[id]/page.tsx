@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 "use client";
 
 import { buttonVariants } from "@/app/components/ui/button";
@@ -12,21 +13,41 @@ import {
 import { useChat } from "@ai-sdk/react";
 import { useParams, useRouter } from "next/navigation";
 import Markdown from "react-markdown";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
   const params = useParams<{ id: string }>();
-  const { messages, input, handleInputChange, handleSubmit, stop, status } =
-    useChat({ id: params.id, body: {
-      sessionId: params.id
-    }});
   const router = useRouter();
+  const { data } = useQuery({
+    queryKey: ["messages"],
+    queryFn: async () => {
+      const res = await fetch("/api/chat", { method: "GET" });
+      const data = await res.json();
+      return data;
+    },
+  });
 
+  let { messages, input, handleInputChange, handleSubmit, stop, status } =
+    useChat({
+      id: params.id,
+      body: {
+        sessionId: params.id,
+      },
+      initialMessages: data,
+    });
+
+  // 处理保存
   const handleSaveClick = () => {
-    router.push(`/dashboard/create?sessionId=${params.id}`);
+    router.push(`/dashboard/create?sessionId=${params.id}&jumb=${true}`);
+  };
+  // 处理清空
+  const handleClearClick = async () => {
+    await fetch("/api/chat", { method: "DELETE" });
+    window.location.reload();
   };
   return (
-    <div>
-      <div className="h-[450px]">
+    <div className="flex-1 flex flex-col gap-2">
+      <div className="flex-1 max-h-[550px]">
         <ScrollArea className="size-full flex justify-center p-4">
           {messages.map((message) => (
             <div
@@ -48,9 +69,9 @@ export default function Page() {
           ))}
         </ScrollArea>
       </div>
-      <form className="m-auto flex flex-col items-center">
+      <form className="flex flex-col items-center flex-1 max-h-[200px]">
         <Textarea
-          className="w-[50vw] shadow-md"
+          className="w-[50vw] shadow-md h-[200px] max-h-"
           placeholder="添加文章内容"
           name="prompt"
           value={input}
@@ -97,6 +118,20 @@ export default function Page() {
               </TooltipTrigger>
               <TooltipContent>
                 <p>停止生成</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger
+                name="save"
+                className={`mt-2 px-10 py-2 cursor-pointer ${buttonVariants()}`}
+                type="button"
+                disabled={status === "streaming" ? true : false}
+                onClick={handleClearClick}
+              >
+                清空
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>清除所有聊天内容</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
